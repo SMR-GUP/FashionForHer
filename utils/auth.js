@@ -4,9 +4,7 @@
 
 // Store the token
 export const setToken = (token) => {
-// console.log("Setting   ",token);
   if (typeof window !== 'undefined') {
-    // console.log("Hiii");
 
     localStorage.setItem('token', token);
   }
@@ -30,11 +28,9 @@ export const removeToken = () => {
 // Get user info from the token
 export const getUserFromToken = () => {
   const token = getToken();
-  console.log("FROM UTILS", token);
   if (token) {
     try {
       const decodedToken = decodeJWT(token);
-      console.log("DECODED TOKEN", decodedToken);
       // Check if the token is expired
       if (decodedToken.exp * 1000 < Date.now()) {
         removeToken();

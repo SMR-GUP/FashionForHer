@@ -4,7 +4,6 @@ import { ObjectId } from 'mongodb';
 export default async function handler(req,res){
     const {userId}=req.body;
     const connection=await dbConnect();
-    console.log(+userId+" called for emptying cart");
     try {
         const clearCart = await connection.connection.db.collection('users').updateOne(
             { _id: ObjectId.createFromHexString(userId) },

@@ -4,8 +4,6 @@ import { ObjectId } from 'mongodb';
 export default async function handler(req,res){
     const {userId,heading,size,image,price,productId,category}=req.body;
     const connection=await dbConnect();
-    console.log("callled");
-    console.log(userId+" "+heading+" "+size+" "+image+" "+price+" "+productId+" "+category);
     try {
         const prodadd = await connection.connection.db.collection('users').updateOne(
             { _id: ObjectId.createFromHexString(userId) },

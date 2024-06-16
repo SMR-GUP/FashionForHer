@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  const showNavbarFooter = router.pathname !== '/login' && router.pathname !== '/register' && router.pathname!=='/forgotPassword';
+  const showNavbarFooter = router.pathname !== '/login' && router.pathname !== '/register' && router.pathname!=='/forgotPassword' && router.pathname !== '/checkout' && router.pathname!=='/order';
 
   return <>
  {showNavbarFooter && <Navbar />}

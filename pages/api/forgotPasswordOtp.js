@@ -6,7 +6,6 @@ import dbConnect from '../../mongoose';
 
 export default async function handler(req, res) {
 
-    console.log("API called");
   if (req.method === 'POST') {
     const connection = await dbConnect();
 
@@ -19,7 +18,6 @@ export default async function handler(req, res) {
             
         }
     const otp = crypto.randomInt(100000, 999999).toString();
-    console.log(otp);
     //store otp vs email in database
     try{
 
@@ -35,12 +33,15 @@ export default async function handler(req, res) {
           res.status(500).json({message:'Error storing otp in database'})
     }
     
+    const pass=process.env.GmailAppPass;
+    const mailId=process.env.mail;
+
 
     const transporter = nodemailer.createTransport({
       service: 'Gmail', // Use your email service
       auth: {
-        user: 'smritigupta1626@gmail.com',
-        pass: 'zpdp pfjx bimj fcwe'
+        user: mailId,
+        pass: pass,
       },
     });
 

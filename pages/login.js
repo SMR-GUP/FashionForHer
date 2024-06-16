@@ -16,7 +16,6 @@ const Login = () => {
 
   const handleSubmit=async(e)=>{
     e.preventDefault();
-    console.log(email+"    "+password);
     try{
         const response= await fetch(`/api/getUser`,{
           method: 'POST',
@@ -27,14 +26,12 @@ const Login = () => {
     });
 
    if(response.status===404){
-    alert('User does not exist!Create a account first');
+    alert('Account does not exists');
    }
 
    if(response.status===200){
     
-      // Redirect to the homepage or any other page after successful sign-in
         const data= await response.json();
-        console.log("tokkk ",data.token)
         const token = data.token;
         setToken(token);
         // const retrievedToken = getToken();

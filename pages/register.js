@@ -12,7 +12,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    console.log(email + "    " + password);
+
     const response = await fetch("/api/send-verification-email", {
       method: "POST",
       headers: {
@@ -20,6 +20,12 @@ const Register = () => {
       },
       body: JSON.stringify({ email, password }),
     });
+
+    if(response.status===404)
+      {
+        alert('Account with this email already exists!');
+        return;
+      }
 
     if (response.ok) {
       setVerificationSent(true);

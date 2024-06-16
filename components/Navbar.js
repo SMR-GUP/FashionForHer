@@ -1,14 +1,16 @@
 import React from "react";
 import Link from "next/link";
-import { FaShoppingCart, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaShoppingCart, FaTimes, FaTrash ,FaHeart} from 'react-icons/fa';
 import { useState , useEffect} from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { getUserFromToken } from '../utils/auth';
 import { removeToken} from '../utils/auth';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaShoppingBag } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+
+
 
 
 
@@ -24,12 +26,13 @@ const Navbar = () => {
   const [products, setProducts] = useState([]);
 
 
+
+
   useEffect(() => {
     const userInfo = getUserFromToken();
     if(userInfo!==null)
       {
     setUser(userInfo.user);
-    console.log("User dataa ",userInfo);
       }
   }, []);
 
@@ -39,17 +42,14 @@ const Navbar = () => {
   useEffect(()=>{
     const fetchCartDetails = async () => {
 
-      console.log("calling fetch cart");
       if (!user) 
         {
-          console.log("No userr sorry return now");
         return;
         }
 
       try {
         const response = await fetch(`/api/getCart?id=${user._id}`);
         const data = await response.json();
-        console.log("Data from Navar Cart ", data.user.cart);
         if (response.ok) {
           setProducts(data.user.cart);
         } else {
@@ -68,7 +68,9 @@ const Navbar = () => {
 
 
 
-  
+  const calculateTotal=()=>{
+    return products.reduce((total, product) => total + product.price, 0);
+  }
   
 
 
@@ -86,19 +88,7 @@ const Navbar = () => {
   } 
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  const increaseQuantity = (index) => {
-    const newProducts = [...products];
-    newProducts[index].quantity += 1;
-    setProducts(newProducts);
-  };
-
-  const decreaseQuantity = (index) => {
-    const newProducts = [...products];
-    if (newProducts[index].quantity > 1) {
-      newProducts[index].quantity -= 1;
-      setProducts(newProducts);
-    }
-  };
+ 
 
   const logout = () => {
 
@@ -221,15 +211,31 @@ const Navbar = () => {
         //   </button>
         // </div>
         <div className="absolute top-19 right-10 flex user-info-container mr-9 text-black">
+           <div className="flex flex-col items-center mr-4 mt-2">
+           <FaHeart
+        onClick={() => router.push('/wishlist')}
+        size={27}
+        className={`${router.pathname === '/wishlist' ? 'text-pink-800' : 'text-pink-500 hover:text-pink-800'}`}
+      />
+                    <span className="text-sm font-bold">Wishlist</span>
+                </div>
           <div className="relative group cursor-pointer flex items-center">
-            <FaUserCircle size={37} className="mb-2 flex text-black-500 " />
+
+          <FaUserCircle
+        onClick={() => router.push('/profile')}
+        size={37}
+        className={`mb-2 flex ${router.pathname === '/profile' ? 'text-gray-500' : 'text-black-500 hover:text-gray-300'}`}
+      />
+
+
             <div className="absolute top-full mt-2 hidden group-hover:block bg-white text-black p-2 rounded shadow-lg">
               {user.email}
             </div>
+            
           </div>
           <button
             onClick={logout}
-            className="logout-button ml-4 cursor-pointer text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800"
+            className="logout-button ml-4 mt-2 cursor-pointer text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 me-4 mb-4 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800"
           >
             Logout
           </button>
@@ -241,7 +247,7 @@ const Navbar = () => {
           Login
         </Link>
       )}
-      <div className="cart text-indigo-500 mr-7 text-4xl">
+      <div className="cart text-indigo-500 mr-9 mt-1 text-4xl  hover:text-indigo-900">
         <FaShoppingCart onClick={openSidebar} className="cursor-pointer" />
       </div>
      
@@ -290,16 +296,36 @@ const Navbar = () => {
                 </div>
               </li>
             ))}
-          </ul>
-          )}
-        <div className="p-4 border-t flex-shrink-0">
-          <button className="w-full bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600">
-            Checkout
-          </button>
-          <button onClick={() => clearCart()} className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-300 mt-3">
+           <div className="mt-6 p-4 bg-yellow-100 rounded-lg text-center">
+        <p className="font-mono text-xl text-black font-bold border-2 border-gray-100  rounded-full pl-3 pr-3 bg-white">
+          Total Bag Price: <span className="font-bold">₹{calculateTotal()}</span>
+        </p>
+        <p className="font-mono text-xl text-black font-bold border-2 border-gray-100 rounded-full pl-3 pr-3 bg-white mt-2">
+          Number of Products: <span className="font-bold">{products.length}</span>
+        </p>
+      </div>
+      <div className="p-4 border-t flex-shrink-0">
+      <button
+  className="w-full bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600"
+  onClick={() => {
+    router.push('/checkout');
+  }}
+>
+  Checkout
+</button>
+<button onClick={() => clearCart()} className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-300 mt-3">
             Clear Cart
           </button>
-        </div>
+          </div>
+
+          </ul>
+
+          
+          )}
+          
+        
+         
+       
         </div>
 
       </div>

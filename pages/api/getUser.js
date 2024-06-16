@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
     if (user.password === password) {
       // Generate a JWT token
-      const token = jwt.sign({ user:user}, process.env.JWT_SECRET_KEY, { expiresIn: '3h' });
+      const token = jwt.sign({ user:user}, process.env.JWT_SECRET_KEY, { expiresIn: '48h' });
      
 
       // Send the JWT token back to the client

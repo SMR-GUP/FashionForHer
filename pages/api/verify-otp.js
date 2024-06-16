@@ -6,13 +6,11 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       const { email, otp, password } = req.body;
-      console.log(email+" "+otp+" "+password);
       const connection = await dbConnect();
       const entry = await connection.connection.db.collection('otpStore').findOne({email:email});
       //fetch from database;
 
-      console.log("Stored ",typeof(entry.otp));
-      console.log("Entered ",typeof(otp));
+      
 
       if (entry.otp === otp) {
         // OTP matches, complete registration
@@ -23,10 +21,11 @@ export default async function handler(req, res) {
         const user = await connection.connection.db.collection('users').insertOne({
             email,
             password,
-            cart:[]
+            cart:[],
+            orders:[],
+            wishlist:[]
           });
 
-          console.log('User registered:', user);
         }
 
         else
