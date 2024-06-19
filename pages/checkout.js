@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import getPincodeDeliveryDays from '@/utils/pincodeDelivery';
+import getPincodeDeliveryDays from "@/utils/pincodeDelivery";
 import { getUserFromToken } from "../utils/auth";
 
 const Checkout = () => {
@@ -17,73 +17,65 @@ const Checkout = () => {
   const [products, setProducts] = useState([]);
 
   const handleSubmit = async (event) => {
-
-
-    if(getPincodeDeliveryDays(pincode)==0)
-      {
-        alert('Sorry! we are not serviceable in your area');
-        return;
-      }
+    if (getPincodeDeliveryDays(pincode) == 0) {
+      alert("Sorry! we are not serviceable in your area");
+      return;
+    }
     event.preventDefault();
 
-    const offset = 330; // UTC+5:30 (Indian time zone)
-const date = new Date();
-const indianTime = new Date(date.getTime() + (offset * 60 * 1000));
-const dateString = indianTime.toISOString();
+    const offset = 330; 
+    const date = new Date();
+    const indianTime = new Date(date.getTime() + offset * 60 * 1000);
+    const dateString = indianTime.toISOString();
 
+    const response = await fetch("/api/placeOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-    
-      const response = await fetch("/api/placeOrder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      body: JSON.stringify({
+        userId: user._id,
+        first: firName,
+        last: lastName,
+        pin: pincode,
+        city: city,
+        state: state,
+        address: address,
+        items: products,
+        date: dateString,
+        amount: calculateTotal(),
+      }),
+    });
 
-        body: JSON.stringify({
-          userId: user._id,
-          first: firName,
-          last: lastName,
-          pin: pincode,
-          city: city,
-          state: state,
-          address: address,
-          items: products,
-          date: dateString,
-          amount: calculateTotal()
-        }),
-      });
+    const data = await response.json();
 
-      const data = await response.json();
+    if (response.ok) {
+      try {
+        const res = await fetch("/api/clearCart", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user._id,
+          }),
+        });
+        const data = await res.json();
 
-      if (response.ok) {
-        try{
-          const res=await fetch('/api/clearCart',{
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userId:user._id
-             }),
-          });
-          const data = await res.json();
-    
-          if (res.ok) {
-            alert('Order Placed Successfully!!!');
-          } else {
-            console.error(data.message);
-          }
+        if (res.ok) {
+          alert("Order Placed Successfully!!!");
+        } else {
+          console.error(data.message);
         }
-    
-        catch (error) {
-          console.error('Failed to clear cart');
-        }
-        window.location.assign('/order');
-      } else {
-        console.error("error placing order", data);
-        alert("Failed place order");
+      } catch (error) {
+        console.error("Failed to clear cart");
       }
-    
+      window.location.assign("/order");
+    } else {
+      console.error("error placing order", data);
+      alert("Failed place order");
+    }
   };
 
   const states = [
@@ -159,7 +151,6 @@ const dateString = indianTime.toISOString();
   return (
     <div className="min-h-screen bg-indigo-500 flex justify-center items-center p-6">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-5xl grid grid-cols-1 md:grid-cols-2">
-        {/* Left part: Shipping Information */}
         <div className="p-6">
           <h2 className="text-2xl font-bold mb-4">Shipping Information</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -171,7 +162,6 @@ const dateString = indianTime.toISOString();
                 onChange={(e) => setFirName(e.target.value)}
                 required
                 autoComplete="off"
-
               />
               <input
                 type="text"
@@ -209,8 +199,6 @@ const dateString = indianTime.toISOString();
               onChange={(e) => setCity(e.target.value)}
               required
               autoComplete="off"
-
-
             />
             <input
               type="text"
@@ -238,7 +226,6 @@ const dateString = indianTime.toISOString();
           </form>
         </div>
 
-        {/* Right part: Order Summary */}
         <div className=" p-6 bg-gray-100 rounded-r-lg ">
           <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
           <ul className="divide-y divide-gray-300 max-h-80 overflow-y-auto">

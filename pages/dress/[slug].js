@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import { FaShoppingBag } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { getUserFromToken } from "@/utils/auth";
-import getPincodeDeliveryDays from '@/utils/pincodeDelivery';
-
+import getPincodeDeliveryDays from "@/utils/pincodeDelivery";
 
 const Post = () => {
   const router = useRouter();
@@ -14,87 +13,74 @@ const Post = () => {
   const [user, setUser] = useState(null);
   const [selectedSize, setSelectedSize] = useState("XS");
 
-  const [pincode, setPincode] = useState('');
+  const [pincode, setPincode] = useState("");
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [clicked, setClicked] = useState(false);
 
-  const[category,setCategory]=useState('dress');
-  const [isPink, setIsPink] = useState('');
+  const [category, setCategory] = useState("dress");
+  const [isPink, setIsPink] = useState("");
   let idOfUser;
 
-
-
-  const handleClick = async(event) => {
+  const handleClick = async (event) => {
     event.preventDefault();
-   if(isPink)
-    {
+    if (isPink) {
       //remove from wishlist-- i will store only category and id.
-      try{
-          const res=await fetch('/api/removeFromWishlist',{
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body:JSON.stringify({
-              category:'dress',
-              productId:slug,
-              userId:user._id
-            })
-          })
+      try {
+        const res = await fetch("/api/removeFromWishlist", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            category: "dress",
+            productId: slug,
+            userId: user._id,
+          }),
+        });
 
-      const data = await res.json();
-      setIsPink(false);
-
-        }
-        catch(error){
-          alert('Error deleting from wishlist');
-        }
-
-    }
-    else
-    {
+        const data = await res.json();
+        setIsPink(false);
+      } catch (error) {
+        alert("Error deleting from wishlist");
+      }
+    } else {
       //add to wishlist
-      if(!user)
-      {
-        alert('Login to add items to wishlist');
+      if (!user) {
+        alert("Login to add items to wishlist");
         return;
       }
-      try{
-          const res=await fetch('/api/addToWishlist',{
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body:JSON.stringify({
-              category:'dress',
-              productId:slug,
-              userId:user._id
-            })
-          })
+      try {
+        const res = await fetch("/api/addToWishlist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            category: "dress",
+            productId: slug,
+            userId: user._id,
+          }),
+        });
 
-      const data = await res.json();
-      setIsPink(true);
-        }
-        catch(error){
-          alert('Error adding in wishlist');
-        }
-    
+        const data = await res.json();
+        setIsPink(true);
+      } catch (error) {
+        alert("Error adding in wishlist");
+      }
     }
   };
 
-
   const handleCheckDeliveryDate = () => {
     const days = getPincodeDeliveryDays(pincode);
-    if(days===0)
-     {
-     setDeliveryDate(null);
-     return;
-     }
-     setClicked(true);
+    if (days === 0) {
+      setDeliveryDate(null);
+      return;
+    }
+    setClicked(true);
     var date = new Date();
     date.setDate(date.getDate() + days);
     setDeliveryDate(date);
-};
+  };
 
   useEffect(() => {
     const userInfo = getUserFromToken();
@@ -103,53 +89,46 @@ const Post = () => {
     }
   }, []);
 
-
-  useEffect(()=>{
-    const fetchWishListContains= async()=>{
-        try{
-
+  useEffect(
+    () => {
+      const fetchWishListContains = async () => {
+        try {
           const userInfo = getUserFromToken();
-    if(userInfo!==null)
-      {
-    idOfUser=userInfo.user._id;
-      }
-      else
-      return;
+          if (userInfo !== null) {
+            idOfUser = userInfo.user._id;
+          } else return;
 
-              const res=await fetch('/api/wishlistCheck',{
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                
+          const res = await fetch("/api/wishlistCheck", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
 
-                body:JSON.stringify({
-                  userId:idOfUser,
-                  productId:slug,
-                  category:category
-                })
-              })
+            body: JSON.stringify({
+              userId: idOfUser,
+              productId: slug,
+              category: category,
+            }),
+          });
 
-              const data=await res.json();
-              if(data.exists)
-                {
-                  setIsPink(true);
-                }
-                else
-                {
-                  setIsPink(false);
-
-                }
-        }
-        catch(error){
+          const data = await res.json();
+          if (data.exists) {
+            setIsPink(true);
+          } else {
+            setIsPink(false);
+          }
+        } catch (error) {
           console.log(error);
         }
-    }
+      };
 
-    if(slug){
-      fetchWishListContains();
-    }
-},[slug],idOfUser);
+      if (slug) {
+        fetchWishListContains();
+      }
+    },
+    [slug],
+    idOfUser
+  );
 
   const handleSizeChange = (event) => {
     setSelectedSize(event.target.value);
@@ -245,9 +224,10 @@ const Post = () => {
               <div class="flex ml-6 items-center">
                 <span class="mr-3">Size</span>
                 <div class="relative">
-                  <select class="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10"
-                  value={selectedSize}
-                  onChange={handleSizeChange}
+                  <select
+                    class="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10"
+                    value={selectedSize}
+                    onChange={handleSizeChange}
                   >
                     <option>XS</option>
                     <option>S</option>
@@ -275,48 +255,59 @@ const Post = () => {
               <span class="title-font font-medium text-2xl text-gray-900">
                 ₹{dress.price}
               </span>
-              <button onClick={handleCartClick} className="flex items-center ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+              <button
+                onClick={handleCartClick}
+                className="flex items-center ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+              >
                 <FaShoppingBag className="mr-2" /> Add to Cart
               </button>{" "}
               <button
-      className={`rounded-full w-10 h-10 p-0 border-0 inline-flex items-center justify-center ml-4 ${
-        isPink ? 'bg-pink-100 text-pink-600' : 'bg-gray-200 text-gray-500'
-      }`}
-      onClick={handleClick}
-    >
-      <svg
-        fill="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        className="w-5 h-5"
-        viewBox="0 0 24 24"
-      >
-        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-      </svg>
-    </button>
-              
+                className={`rounded-full w-10 h-10 p-0 border-0 inline-flex items-center justify-center ml-4 ${
+                  isPink
+                    ? "bg-pink-100 text-pink-600"
+                    : "bg-gray-200 text-gray-500"
+                }`}
+                onClick={handleClick}
+              >
+                <svg
+                  fill="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                </svg>
+              </button>
             </div>
             <div>
-
-<div class="flex mt-7">
-<input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)}  placeholder="Enter pincode" class="w-72 p-2 pl-10 text-gray-700 border border-gray-400 text-center rounded" />
-<button     onClick={handleCheckDeliveryDate} class="w-52 bg-orange-500 hover:bg-orange-700 text-white  pl-2 pr-2 rounded ml-2">
-📅 Check Delivery Date
-</button>
-
-</div>
-{clicked && (
-deliveryDate === null ? (
-<p className="mt-2 text-blue-800 text-center font-mono font-bold text-lg">Sorry, we are not serviceable in your area.</p>
-) : (
-<p className="mt-2 text-green-600 text-center font-mono font-bold text-lg">
-  Order Now to get it by {deliveryDate.toDateString()} ⭐
-</p>
-)
-)}
-
-</div>
+              <div class="flex mt-7">
+                <input
+                  type="text"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                  placeholder="Enter pincode"
+                  class="w-72 p-2 pl-10 text-gray-700 border border-gray-400 text-center rounded"
+                />
+                <button
+                  onClick={handleCheckDeliveryDate}
+                  class="w-52 bg-orange-500 hover:bg-orange-700 text-white  pl-2 pr-2 rounded ml-2"
+                >
+                  📅 Check Delivery Date
+                </button>
+              </div>
+              {clicked &&
+                (deliveryDate === null ? (
+                  <p className="mt-2 text-blue-800 text-center font-mono font-bold text-lg">
+                    Sorry, we are not serviceable in your area.
+                  </p>
+                ) : (
+                  <p className="mt-2 text-green-600 text-center font-mono font-bold text-lg">
+                    Order Now to get it by {deliveryDate.toDateString()} ⭐
+                  </p>
+                ))}
+            </div>
           </div>
         </div>
       </div>

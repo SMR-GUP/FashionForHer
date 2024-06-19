@@ -1,27 +1,24 @@
 // utils/auth.js
 
-
-
 // Store the token
 export const setToken = (token) => {
-  if (typeof window !== 'undefined') {
-
-    localStorage.setItem('token', token);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("token", token);
   }
 };
 
 // Get the token
 export const getToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('token');
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("token");
   }
   return null;
 };
 
 // Remove the token
 export const removeToken = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('token');
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("token");
   }
 };
 
@@ -36,9 +33,9 @@ export const getUserFromToken = () => {
         removeToken();
         return null;
       }
-      return decodedToken; // This contains user details
+      return decodedToken;
     } catch (error) {
-      console.error('Invalid token:', error);
+      console.error("Invalid token:", error);
       return null;
     }
   }
@@ -47,17 +44,22 @@ export const getUserFromToken = () => {
 
 const decodeJWT = (token) => {
   try {
-    const payload = token.split('.')[1];
+    const payload = token.split(".")[1];
     return JSON.parse(base64UrlDecode(payload));
   } catch (error) {
-    console.error('Invalid token:', error);
+    console.error("Invalid token:", error);
     return null;
   }
 };
 
 const base64UrlDecode = (str) => {
-  const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  return decodeURIComponent(atob(base64).split('').map((c) => {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
+  const base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  return decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map((c) => {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
 };
