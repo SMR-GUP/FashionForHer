@@ -9,6 +9,8 @@ import { removeToken } from "../utils/auth";
 import { FaUserCircle } from "react-icons/fa";
 import { FaShoppingBag } from "react-icons/fa";
 import { useRouter } from "next/router";
+import Image from 'next/image';
+
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -121,25 +123,21 @@ const Navbar = () => {
   return (
     <div>
       <header class="text-gray-600 body-font py-3 ">
-        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center shadow-lg">
+        <div class="container mx-auto flex flex-wrap p-4 flex-col md:flex-row items-center shadow-lg">
           <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-            <Link href="/" class="ml-3 text-xl">
-              EShop
+          <Image
+        src="/logo.jpg"
+        alt="Logo"
+        width={40}
+        height={40}
+        href='/'
+        className="h-15 w-15 rounded-full"
+      />
+            <Link href="/" class="ml-1 text-xl text-purple-700  ">
+              FashionForHer
             </Link>
           </a>
-          <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+          <nav class="ml-11 flex flex-wrap items-center text-base justify-center">
             <Link
               className={`mr-5 font-mono text-xl text-purple-700 font-bold border-2 border-white rounded-full pl-3 pr-3 bg-indigo-100  ${
                 router.pathname === "/tshirt"
@@ -182,10 +180,10 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          <div className="icons-container absolute top-19 right-10 flex">
+          <div className="icons-container absolute top-19 right-20 flex">
             {user ? (
               <div className="absolute top-19 right-10 flex user-info-container mr-9 text-black">
-                <div className="flex flex-col items-center mr-4 mt-2">
+                <div className="flex flex-col items-center mr-6 mt-2">
                   <FaHeart
                     onClick={() => router.push("/wishlist")}
                     size={27}
@@ -197,7 +195,7 @@ const Navbar = () => {
                   />
                   <span className="text-sm font-bold">Wishlist</span>
                 </div>
-                <div className="relative group cursor-pointer flex items-center">
+                <div className="relative group cursor-pointer flex items-center mr-6">
                   <FaUserCircle
                     onClick={() => router.push("/profile")}
                     size={37}
@@ -214,7 +212,7 @@ const Navbar = () => {
                 </div>
                 <button
                   onClick={logout}
-                  className="logout-button ml-4 mt-2 cursor-pointer text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 me-4 mb-4 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800"
+                  className="logout-button ml-3 mr-6 mt-2 cursor-pointer text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 me-4 mb-4 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800"
                 >
                   Logout
                 </button>
@@ -227,7 +225,7 @@ const Navbar = () => {
                 Login
               </Link>
             )}
-            <div className="cart text-indigo-500 mr-9 mt-1 text-4xl  hover:text-indigo-900">
+            <div className="cart text-indigo-500 mr-4 mt-1 text-4xl  hover:text-indigo-900">
               <FaShoppingCart
                 onClick={openSidebar}
                 className="cursor-pointer"
