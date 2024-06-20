@@ -57,7 +57,7 @@ const Register = () => {
     <div className="p-20 min-h-screen flex items-center justify-end bg-login ">
       <div className="mr-10 bg-transparent p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Welcome To EShop!
+          Welcome To FashionForHer!
         </h1>
         {verificationSent ? (
           <form onSubmit={handleVerifyOtp}>

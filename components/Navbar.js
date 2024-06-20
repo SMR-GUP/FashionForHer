@@ -137,7 +137,7 @@ const Navbar = () => {
               FashionForHer
             </Link>
           </a>
-          <nav class="ml-11 flex flex-wrap items-center text-base justify-center">
+          <nav class="ml-14 flex flex-wrap items-center text-base justify-center">
             <Link
               className={`mr-5 font-mono text-xl text-purple-700 font-bold border-2 border-white rounded-full pl-3 pr-3 bg-indigo-100  ${
                 router.pathname === "/tshirt"
